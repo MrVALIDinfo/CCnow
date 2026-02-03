@@ -1,26 +1,30 @@
+import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# создаём данные
-data = {
-    "day": [1, 2, 3, 4, 5],
-    "sales": [10, 15, 7, 20, 18]
-}
 
-df = pd.DataFrame(data)
+# Используем максимально стабильный тикер для евро
+ticker_symbol = "EUR=X" 
+usd_eur = yf.Ticker(ticker_symbol)
 
-# строим график
-df.plot(x="day", y="sales")
+data = usd_eur.history(period="1y", interval="1d")
 
-# создаём данные
-data = {
-    "day": [1, 2, 3, 4, 5],
-    "sales": [10, 15, 7, 20, 18]
-}
+if not data.empty:
+    # Выводим первые несколько строк данных для проверки
+    print(data.head())
 
-df = pd.DataFrame(data)
+    # Строим график изменения курса евро к доллару за последний месяц
+    plt.figure(figsize=(12, 6))
+    plt.plot(data.index, data['Close'],marker = 'o',linestyle = '-', label='USD/EUR', color='green')
 
-# строим график
-df.plot(x="day", y="sales")
+    plt.xticks(rotation=45)
 
-plt.show()
+    plt.xticks(data.index[::1])
+    plt.title('Курс доллара к евро за последний год')
+    plt.xlabel('Дата')
+    plt.ylabel('Курс USD/EUR')
+    plt.legend()
+    plt.grid()
+    plt.show()
+else:
+    print("Нет данных для отображения.")
